@@ -656,6 +656,7 @@ function emarking_gettotalpagesfortable($category) {
 			$arraytotalpagesbydate[$costbydate->printdate][0] = date("F", mktime(0, 0, 0, $costbydate->printdate, 10));
 			$arraytotalpagesbydate[$costbydate->printdate][1] = '$'." ".number_format((int)$costbydate->totalcost);
 		}
+
 	} else {
 		$arraytotalpagesbydate = ['0'];
 	}
@@ -870,7 +871,14 @@ function emarking_getprintingcost($category) {
 			EMARKING_EXAM_PRINTED,
 	);
 	// Sql that counts all the resourses since the last time the app was used
-		$sqlprintingcost = "z";
+	$sqlprintingcost = "SELECT SUM(pages) as totalcost FROM (SELECT c.id AS courseid, eexam.id AS examid, eexam.printingcost*((eexam.totalpages+eexam.extrasheets)*(eexam.totalstudents+eexam.extraexams)) AS pages
+							   FROM mdl_emarking AS e
+   							   INNER JOIN mdl_emarking_exams AS eexam ON (e.id = eexam.emarking)
+                               INNER JOIN mdl_course AS c ON (c.id = eexam.course)
+                               INNER JOIN mdl_course_categories as cc ON (cc.id = c.category)
+							   WHERE (cc.path like ? OR cc.id = ?) AND eexam.status IN (?)
+                               GROUP BY eexam.id
+                               ORDER BY pages DESC) AS pagestotal";
 
 	// Gets the information of the above query
 	$arrayprintingcost = array();
@@ -904,7 +912,7 @@ function emarking_gettotalcostbydate($category) {
 	// Gets the information of the above query
 	if($totalcostbydate = $DB->get_records_sql($sqltotalcostbydate, $totalcostbydateparams)){
 		$arraytotalcostbydate=array();
-		$arraytotalcostbydate[0]=['Month','Total cost'];
+		$arraytotalcostbydate[0]=['Month','Total pages'];
 		for($contadormes = 1; $contadormes <= 12; $contadormes++){
 			if(!isset($arraytotalcostbydate[$contadormes])){
 				$arraytotalcostbydate[$contadormes] = [date("F", mktime(0, 0, 0, $contadormes, 10)),0];
