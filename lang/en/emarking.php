@@ -308,6 +308,14 @@ $string['printingcost'] = 'Cost for impresed page';
 $string['printingcost_help'] = 'The cost that have each page you print';
 $string['totalprintingcost'] = 'Total printing cost';
 $string['costsettings'] = 'Settings';
+$string['costconfigtab'] = 'Set category cost';
+$string['costcategorytable'] = 'View category costs';
+$string['editcost'] = 'Edit';
+$string['pieactivities'] = 'Activities';
+$string['pieemarkingcourses'] = 'eMarking courses';
+$string['piemeanexamleanght'] = 'Avg. exam lenght';
+$string['pietotalprintedpages'] = 'Printed pages';
+$string['pietotalcost'] = 'Total cost';
 
 
 ////////////////////////////////////////

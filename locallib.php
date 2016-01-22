@@ -785,6 +785,24 @@ function emarking_printoders_tabs($category)
     return $tabs;
 }
 
+function emarking_costconfig_tabs($category)
+{
+	$tabs = array();
+
+	// Cost configuration
+	$tabs[] = new tabobject( get_string("costconfigtab", 'mod_emarking'), new moodle_url("/mod/emarking/reports/costconfig.php", array(
+			"category" =>$category->id
+	)), get_string("costconfigtab", 'mod_emarking'));
+
+	// Cost category table
+	$tabs[] = new tabobject(get_string("costcategorytable", 'mod_emarking'), new moodle_url("/mod/emarking/reports/categorycosttable.php", array(
+			"category" =>$category->id
+	)), get_string("costcategorytable", 'mod_emarking'));
+
+
+	return $tabs;
+}
+
 /**
  * Verifies if there's a logo for the personalized header, and if there is one
  * it copies it to the module area

@@ -225,7 +225,7 @@ function emarking_add_instance(stdClass $data, mod_emarking_mod_form $mform = nu
         
         // Calculate total pages for exam
         $exam->totalpages = $numpages;
-        $coursecategoryparams= array(
+            $coursecategoryparams= array(
         		$COURSE->id
         );
         $sqlcoursecategory="SELECT c.id AS courseid, cc.printingcost AS cost
@@ -238,8 +238,6 @@ function emarking_add_instance(stdClass $data, mod_emarking_mod_form $mform = nu
         	$categorycost[$category->courseid] = $category->cost;
         }
         $exam->printingcost = $categorycost[$COURSE->id];
-       } else {
-       	
        }
         $exam->id = $DB->insert_record('emarking_exams', $exam);
         
