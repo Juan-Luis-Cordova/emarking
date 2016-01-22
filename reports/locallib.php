@@ -912,7 +912,7 @@ function emarking_gettotalcostbydate($category) {
 	// Gets the information of the above query
 	if($totalcostbydate = $DB->get_records_sql($sqltotalcostbydate, $totalcostbydateparams)){
 		$arraytotalcostbydate=array();
-		$arraytotalcostbydate[0]=['Month','Total pages'];
+		$arraytotalcostbydate[0]=['Month','Total cost'];
 		for($contadormes = 1; $contadormes <= 12; $contadormes++){
 			if(!isset($arraytotalcostbydate[$contadormes])){
 				$arraytotalcostbydate[$contadormes] = [date("F", mktime(0, 0, 0, $contadormes, 10)),0];
