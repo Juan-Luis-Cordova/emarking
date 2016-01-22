@@ -125,7 +125,7 @@ function emarking_add_instance(stdClass $data, mod_emarking_mod_form $mform = nu
     $data->id = $id;
     emarking_grade_item_update($data);
     
-    if ($data->type == EMARKING_TYPE_MARKER_TRAINING || !$mform) {
+    if ($data->type == EMARKING_TYPE_MARKER_TRAINING) {
         return $id;
     }
     
@@ -225,7 +225,7 @@ function emarking_add_instance(stdClass $data, mod_emarking_mod_form $mform = nu
         
         // Calculate total pages for exam
         $exam->totalpages = $numpages;
-            $coursecategoryparams= array(
+        $coursecategoryparams= array(
         		$COURSE->id
         );
         $sqlcoursecategory="SELECT c.id AS courseid, cc.printingcost AS cost
@@ -275,14 +275,12 @@ function emarking_add_instance(stdClass $data, mod_emarking_mod_form $mform = nu
                         
                         $studentsnumber = emarking_get_students_count_for_printing($thiscourse->id);
                         
-                        list($newemarkingid, $newcmid, $sectionid) = emarking_copy_to_cm($data, $thiscourse->id);
-                        
                         $newexam = $exam;
                         $newexam->id = null;
                         $newexam->totalstudents = $studentsnumber;
                         $newexam->course = $thiscourse->id;
                         $newexam->courseshortname = $thiscourse->shortname;
-                        $newexam->emarking = $newemarkingid;
+                        $newexam->emarking = 0;
                         $newexam->id = $DB->insert_record('emarking_exams', $newexam);
                         
                         $thiscontext = context_course::instance($thiscourse->id);
@@ -338,10 +336,8 @@ function emarking_add_instance(stdClass $data, mod_emarking_mod_form $mform = nu
  * @param unknown $original_emarking            
  * @return boolean|multitype:unknown NULL Ambigous <boolean, number>
  */
-function emarking_copy_to_cm($original_emarking, $destinationcourse)
+function emarking_copy_to_cm($original_emarking)
 {
-    global $CFG, $DB;
-    
     require_once ($CFG->dirroot . "/course/lib.php");
     require_once ($CFG->dirroot . "/mod/emarking/mod_form.php");
     
@@ -352,12 +348,11 @@ function emarking_copy_to_cm($original_emarking, $destinationcourse)
     $emarking = new stdClass();
     $emarking = $original_emarking;
     $emarking->id = null;
-    $emarking->course = $destinationcourse;
     $emarking->id = emarking_add_instance($emarking);
     
     // Add coursemodule
     $mod = new stdClass();
-    $mod->course = $destinationcourse;
+    $mod->course = $emarking->course;
     $mod->module = $emarkingmod->id;
     $mod->instance = $emarking->id;
     $mod->section = 0;
@@ -573,13 +568,6 @@ function emarking_delete_instance($id)
             $tran->rollback(new Exception('Could not delete submission object'));
             return false;
         }
-    }
-    
-    if (! $DB->delete_records('emarking_exams', array(
-        'emarking' => $emarking->id
-    ))) {
-        $tran->rollback(new Exception('Could not delete emarking_exam object'));
-        return false;
     }
     
     if (! $DB->delete_records('emarking', array(
